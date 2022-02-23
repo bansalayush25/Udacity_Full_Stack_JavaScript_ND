@@ -27,14 +27,14 @@ db-migrate up
 
 1. Add the specifications below to an env file:
 ```
-- POSTGRES_HOST=127.0.0.1
-- POSTGRES_DB=store_front
-- POSTGRES_TEST_DB=store_front_test
-- POSTGRES_USER=full_stack_user
-- POSTGRES_PASSWORD=password123
-- BCRYPT_PASSWORD=your-secret-BCRYPT_PASSWORD
+- POSTGRES_HOST=localhost
+- POSTGRES_DB=store
+- POSTGRES_DB_TEST=store_test
+- POSTGRES_USER=user
+- POSTGRES_PASSWORD=password
+- BCRYPT_PASSWORD=secret
 - SALT_ROUNDS=10
-- TOKEN_SECRET=alohomora123!
+- TOKEN_SECRET=aloha
 - ENV=dev
 ```
 ## Getting Started

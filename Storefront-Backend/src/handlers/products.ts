@@ -10,7 +10,6 @@ const index = async (_req: Request, res: Response) => {
 };
 
 const show = async (req: Request, res: Response) => {
-  // add check if it is number
   const products = await store.show(req.body.prodId);
   res.json(products);
 };
