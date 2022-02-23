@@ -4,7 +4,7 @@
       "host": "localhost",
       "port" : 5432,
       "database": "store",
-      "user": "ayush",
+      "user": "user",
       "password": "password"
     },
     "test": {
@@ -12,7 +12,7 @@
       "host": "localhost",
       "port" : 5432,
       "database": "store_test",
-      "user": "ayush",
-      "password": "password_test"
+      "user": "user",
+      "password": "password"
     }
   }

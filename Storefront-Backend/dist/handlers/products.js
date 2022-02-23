@@ -39,56 +39,48 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
+var products_1 = require("../models/products");
 var verifytoken_1 = __importDefault(require("../middleware/verifytoken"));
-var users_1 = require("../models/users");
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var token_secret = process.env.TOKEN_SECRET;
-var store = new users_1.UserStore();
+var store = new products_1.ProductStore();
 var index = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var users;
+    var products;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, store.index()];
             case 1:
-                users = _a.sent();
-                res.json(users);
+                products = _a.sent();
+                res.json(products);
                 return [2 /*return*/];
         }
     });
 }); };
 var show = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var users;
+    var products;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, store.show(req.body.userId)];
+            case 0: return [4 /*yield*/, store.show(req.body.prodId)];
             case 1:
-                users = _a.sent();
-                res.json(users);
+                products = _a.sent();
+                res.json(products);
                 return [2 /*return*/];
         }
     });
 }); };
 var create = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, result, err_1;
+    var product, products, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                user = {
-                    firstname: req.body.firstname,
-                    lastname: req.body.lastname,
-                    password: req.body.password
+                product = {
+                    name: req.body.name,
+                    price: req.body.price,
+                    category: req.body.category
                 };
-                return [4 /*yield*/, store.create(user)];
+                return [4 /*yield*/, store.create(product)];
             case 1:
-                result = _a.sent();
-                if (result) {
-                    res.json(result);
-                }
-                else {
-                    res.status(400);
-                    res.send('Failed to create user');
-                }
+                products = _a.sent();
+                res.json(products);
                 return [3 /*break*/, 3];
             case 2:
                 err_1 = _a.sent();
@@ -99,38 +91,9 @@ var create = function (req, res) { return __awaiter(void 0, void 0, void 0, func
         }
     });
 }); };
-var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, u, token, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                user = {
-                    firstname: req.body.firstname,
-                    lastname: req.body.lastname,
-                    password: req.body.password
-                };
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, store.login(user)];
-            case 2:
-                u = _a.sent();
-                token = jsonwebtoken_1["default"].sign({ user: u }, token_secret);
-                res.json(token);
-                return [3 /*break*/, 4];
-            case 3:
-                error_1 = _a.sent();
-                res.status(401);
-                res.json({ error: error_1 });
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
-        }
-    });
-}); };
-var user_routes = function (app) {
-    app.get('/users', verifytoken_1["default"], index);
-    app.get('/users/:id', verifytoken_1["default"], show);
-    app.post('/users', verifytoken_1["default"], create);
-    app.post('/users/login', login);
+var product_routes = function (app) {
+    app.get('/products', index);
+    app.get('/products/:id', show);
+    app.post('/products', verifytoken_1["default"], create);
 };
-exports["default"] = user_routes;
+exports["default"] = product_routes;

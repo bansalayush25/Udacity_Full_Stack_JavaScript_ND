@@ -1,16 +1,28 @@
-import express, { Request, Response } from "express";
-import { Order, OrderStore } from "../models/orders";
+import express, { Request, Response } from 'express';
+import { Order, OrderStore } from '../models/orders';
+import verifyToken from '../middleware/verifytoken';
 
-const store = new OrderStore()
+const store = new OrderStore();
 
 const show = async (req: Request, res: Response) => {
-    // add check if it is number
-    const orders = store.show(req.params.userId as unknown as number)
-    res.json(orders)
-}
+  const orders = await store.show(req.body.userId);
+  res.json(orders);
+};
 
-const user_routes = (app: express.Application) => {
-    app.get('/orders/:id', show)
-}
+const create = async (req: Request, res: Response) => {
+  const order: Order = {
+    user_id: req.body.user_id,
+    product_id: req.body.product_id,
+    quantity: req.body.quantity,
+    status: req.body.status,
+  };
+  const orders = await store.create(order);
+  res.json(orders);
+};
 
-export default user_routes
+const order_routes = (app: express.Application) => {
+  app.get('/orders/:id', verifyToken, show);
+  app.post('/orders', verifyToken, create);
+};
+
+export default order_routes;

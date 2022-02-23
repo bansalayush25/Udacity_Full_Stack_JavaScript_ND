@@ -39,17 +39,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.UserStore = void 0;
+exports.ProductStore = void 0;
 var database_1 = __importDefault(require("../database"));
-var bcrypt_1 = __importDefault(require("bcrypt"));
-var dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1["default"].config();
-var pepper = process.env.BCRYPT_PASSWORD;
-var saltRounds = process.env.SALT_ROUNDS;
-var UserStore = /** @class */ (function () {
-    function UserStore() {
+var ProductStore = /** @class */ (function () {
+    function ProductStore() {
     }
-    UserStore.prototype.index = function () {
+    ProductStore.prototype.index = function () {
         return __awaiter(this, void 0, void 0, function () {
             var conn, sql, result, err_1;
             return __generator(this, function (_a) {
@@ -59,7 +54,7 @@ var UserStore = /** @class */ (function () {
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'SELECT * FROM users';
+                        sql = 'SELECT * FROM products';
                         return [4 /*yield*/, conn.query(sql)];
                     case 2:
                         result = _a.sent();
@@ -67,13 +62,13 @@ var UserStore = /** @class */ (function () {
                         return [2 /*return*/, result.rows];
                     case 3:
                         err_1 = _a.sent();
-                        throw new Error("Cannot get users ".concat(err_1));
+                        throw new Error("Cannot get products ".concat(err_1));
                     case 4: return [2 /*return*/];
                 }
             });
         });
     };
-    UserStore.prototype.show = function (userId) {
+    ProductStore.prototype.show = function (productId) {
         return __awaiter(this, void 0, void 0, function () {
             var conn, sql, result, err_2;
             return __generator(this, function (_a) {
@@ -83,73 +78,48 @@ var UserStore = /** @class */ (function () {
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'SELECT * FROM users WHERE id=($1)';
-                        return [4 /*yield*/, conn.query(sql, [userId])];
+                        sql = 'SELECT * FROM products WHERE id=($1)';
+                        return [4 /*yield*/, conn.query(sql, [productId])];
                     case 2:
                         result = _a.sent();
                         conn.release();
                         return [2 /*return*/, result.rows[0]];
                     case 3:
                         err_2 = _a.sent();
-                        throw new Error("Could not find user ".concat(userId, ". Error: ").concat(err_2));
+                        throw new Error("Could not find product ".concat(productId, ". Error: ").concat(err_2));
                     case 4: return [2 /*return*/];
                 }
             });
         });
     };
-    UserStore.prototype.create = function (user) {
+    ProductStore.prototype.create = function (product) {
         return __awaiter(this, void 0, void 0, function () {
-            var hash, conn, sql, result, newUser, err_3;
+            var conn, sql, result, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        hash = bcrypt_1["default"].hashSync(user.password + pepper, parseInt(saltRounds));
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'INSERT INTO users (firstname, lastname, password) VALUES($1, $2, $3) RETURNING *';
+                        sql = 'INSERT INTO products (name, price, category) VALUES($1, $2, $3) RETURNING *';
                         return [4 /*yield*/, conn.query(sql, [
-                                user.firstname,
-                                user.lastname,
-                                hash,
+                                product.name,
+                                product.price,
+                                product.category,
                             ])];
                     case 2:
                         result = _a.sent();
-                        newUser = result.rows[0];
                         conn.release();
-                        return [2 /*return*/, newUser];
+                        return [2 /*return*/, result.rows[0]];
                     case 3:
                         err_3 = _a.sent();
-                        throw new Error("Could not add new user ".concat(user.firstname, ". Error: ").concat(err_3));
+                        throw new Error("Could not add new product ".concat(product.name, ". Error: ").concat(err_3));
                     case 4: return [2 /*return*/];
                 }
             });
         });
     };
-    UserStore.prototype.login = function (user) {
-        return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, result, dbUser;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, database_1["default"].connect()];
-                    case 1:
-                        conn = _a.sent();
-                        sql = 'SELECT password FROM users WHERE firstname=($1) AND lastname=($2)';
-                        return [4 /*yield*/, conn.query(sql, [user.firstname, user.lastname])];
-                    case 2:
-                        result = _a.sent();
-                        if (result.rows.length) {
-                            dbUser = result.rows[0];
-                            if (bcrypt_1["default"].compareSync(user.password + pepper, dbUser.password)) {
-                                return [2 /*return*/, user];
-                            }
-                        }
-                        return [2 /*return*/, null];
-                }
-            });
-        });
-    };
-    return UserStore;
+    return ProductStore;
 }());
-exports.UserStore = UserStore;
+exports.ProductStore = ProductStore;
