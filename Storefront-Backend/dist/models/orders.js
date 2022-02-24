@@ -75,16 +75,11 @@ var OrderStore = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        sql = 'INSERT INTO Orders (product_id, user_id, quantity, status) VALUES($1, $2, $3, $4) RETURNING *';
+                        sql = 'INSERT INTO orders (user_id, status) VALUES($1, $2) RETURNING *';
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        return [4 /*yield*/, conn.query(sql, [
-                                order.product_id,
-                                order.user_id,
-                                order.quantity,
-                                order.status,
-                            ])];
+                        return [4 /*yield*/, conn.query(sql, [order.user_id, order.status])];
                     case 2:
                         result = _a.sent();
                         dbOrder = result.rows[0];
@@ -93,6 +88,35 @@ var OrderStore = /** @class */ (function () {
                     case 3:
                         err_2 = _a.sent();
                         throw new Error("Could not add new order. Error: ".concat(err_2));
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    OrderStore.prototype.addProduct = function (order_product) {
+        return __awaiter(this, void 0, void 0, function () {
+            var sql, conn, result, dbOrderProduct, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        sql = 'INSERT INTO order_products (order_id, product_id, quantity) VALUES($1, $2, $3) RETURNING *';
+                        return [4 /*yield*/, database_1["default"].connect()];
+                    case 1:
+                        conn = _a.sent();
+                        return [4 /*yield*/, conn.query(sql, [
+                                order_product.order_id,
+                                order_product.product_id,
+                                order_product.quantity,
+                            ])];
+                    case 2:
+                        result = _a.sent();
+                        dbOrderProduct = result.rows[0];
+                        conn.release();
+                        return [2 /*return*/, dbOrderProduct];
+                    case 3:
+                        err_3 = _a.sent();
+                        throw new Error("Could not add new product. Error: ".concat(err_3));
                     case 4: return [2 /*return*/];
                 }
             });

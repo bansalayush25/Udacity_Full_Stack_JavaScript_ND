@@ -7,13 +7,23 @@ const token_secret = process.env.TOKEN_SECRET!;
 const store = new UserStore();
 
 const index = async (_req: Request, res: Response) => {
-  const users = await store.index();
-  res.json(users);
+  try {
+    const users = await store.index();
+    res.json(users);
+  } catch (err) {
+    res.status(400);
+    res.send(err);
+  }
 };
 
 const show = async (req: Request, res: Response) => {
-  const users = await store.show(req.body.userId);
-  res.json(users);
+  try {
+    const users = await store.show(req.params.id);
+    res.json(users);
+  } catch (err) {
+    res.status(400);
+    res.send(err);
+  }
 };
 
 const create = async (req: Request, res: Response) => {
@@ -23,6 +33,7 @@ const create = async (req: Request, res: Response) => {
       lastname: req.body.lastname as string,
       password: req.body.password as string,
     };
+
     const result = await store.create(user);
     if (result) {
       res.json(result);
@@ -37,12 +48,13 @@ const create = async (req: Request, res: Response) => {
 };
 
 const login = async (req: Request, res: Response) => {
-  const user: User = {
-    firstname: req.body.firstname as string,
-    lastname: req.body.lastname as string,
-    password: req.body.password as string,
-  };
   try {
+    const user: User = {
+      firstname: req.body.firstname as string,
+      lastname: req.body.lastname as string,
+      password: req.body.password as string,
+    };
+
     const u = await store.login(user);
     var token = jwt.sign({ user: u }, token_secret);
     res.json(token);
